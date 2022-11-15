@@ -2,7 +2,7 @@
  * MZ_BMPE_Sensors.c
  *
  *  Created on: Nov 15, 2022
- *      Author: zytam
+ *      Author: Mateusz Żyta (mateusz@mzyta.pl)
  */
 
 
@@ -11,7 +11,8 @@
 static uint8_t DeviceCount = 0;
 
 
-MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceId, uint8_t DeviceAddress, uint8_t DeviceType, uint8_t CommunicationProtocol)
+//Device init function
+MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceAddress, MZ_BMPE_DeviceType_t DeviceType, MZ_BMPE_CommunicationProtocol_t CommunicationProtocol)
 {
 	if(DevicePtr == 0)
 	{
@@ -23,7 +24,15 @@ MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceI
 		//Checking device address and writing it to device pointer
 		if(DeviceAddress == 0)
 		{
-			return BMPE_INIT_ERROR;
+			if(CommunicationProtocol == SPI)
+			{
+				DevicePtr->DeviceAddress = DeviceAddress;
+			}
+			else
+			{
+				return BMPE_INIT_ERROR;
+			}
+
 		}
 		else
 		{
@@ -52,10 +61,56 @@ MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceI
 
 		//Creating device Id
 		DeviceCount += 1;
-		DevicePtr->DeviceId = DeviceId;
+		DevicePtr->DeviceId = DeviceCount;
 
 	}
 
 	return BMPE_OK;
 
 }
+
+#ifdef MZ_BMPE_I2C
+MZ_BMPE_Errors_t MZ_BMPE_I2C_Registration(MZ_BMPE_Device_t *DevicePtr, I2C_HandleTypeDef *i2cHandle)
+{
+	if(DevicePtr == 0)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		if(i2cHandle == 0)
+		{
+			return BMPE_I2C_HANDLE_ERROR;
+		}
+		else
+		{
+			DevicePtr->i2cHandle = i2cHandle;
+		}
+	}
+
+	return BMPE_OK;
+}
+#endif
+
+#ifdef MZ_BMPE_SPI
+MZ_BMPE_Errors_t MZ_BMPE_SPI_Registration(MZ_BMPE_Device_t *DevicePtr, SPI_HandleTypeDef *spiHandle)
+{
+	if(DevicePtr == 0)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		if(i2cHandle == 0)
+		{
+			return BMPE_SPI_HANDLE_ERROR;
+		}
+		else
+		{
+			DevicePtr->spiHandle = spiHandle;
+		}
+	}
+
+	return BMPE_OK;
+}
+#endif
