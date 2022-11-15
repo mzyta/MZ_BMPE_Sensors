@@ -76,7 +76,8 @@ typedef enum{
 	BMPE_WRONG_COMMUNICATION_PROTOCOL = 3,
 	BMPE_COMMUNICATION_PROBLEM = 4,
 	BMPE_I2C_HANDLE_ERROR = 5,
-	BMPE_SPI_HANDLE_ERROR = 6
+	BMPE_SPI_HANDLE_ERROR = 6,
+	BMPE_OVERSAMPLING_ERROR = 7
 } MZ_BMPE_Errors_t;
 
 
@@ -89,5 +90,7 @@ MZ_BMPE_Errors_t MZ_BMPE_I2C_Registration(MZ_BMPE_Device_t *DevicePtr, I2C_Handl
 #ifdef MZ_BMPE_SPI
 MZ_BMPE_Errors_t MZ_BMPE_SPI_Registration(MZ_BMPE_Device_t *DevicePtr, SPI_HandleTypeDef *spiHandle);
 #endif
+
+MZ_BMPE_Errors_t MZ_BMPE_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
 
 #endif /* MZ_BMPE_SENSORS_H_ */
