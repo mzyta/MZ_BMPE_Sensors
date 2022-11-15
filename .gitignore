@@ -1,0 +1,11 @@
+.cproject
+.mxproject
+.project
+.settings/
+Core/
+Debug/
+Drivers/
+MZ_BMPE_Sensors Debug.launch
+MZ_BMPE_Sensors.ioc
+STM32F411RETX_FLASH.ld
+STM32F411RETX_RAM.ld
