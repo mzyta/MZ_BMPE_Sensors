@@ -31,6 +31,9 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetMode(MZ_BMPE_Device_t *DevicePtr, uin
 //Humidity oversampling functions
 static MZ_BMPE_Errors_t MZ_BMPE_BME280_SetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
 
+//SPI state functions
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t SpiState);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*-----------------------------------------------------Functions-------------------------------------------------------------------*/
@@ -447,6 +450,81 @@ static MZ_BMPE_Errors_t MZ_BMPE_BME280_SetHumidityOversampling(MZ_BMPE_Device_t 
 
 		//Writing value to control humidity register
 		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_CTRL_HUM, &CtrlHumRegVal) != BMPE_OK)
+		{
+			return BMPE_WRITE_REGISTER_ERROR;
+		}
+
+		else
+		{
+			return BMPE_OK;
+		}
+	}
+
+}
+
+
+//Function to set SPI state for devices
+MZ_BMPE_Errors_t MZ_BMPE_SetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t SpiState)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking device type and use set SPI state functions for correct device
+		if(DevicePtr->DeviceType == BMP180)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+			//Checking SPI state value and use set SPI state function for correct value
+			if(SpiState > 1)
+			{
+				return BMPE_SPI_STATE_ERROR;
+			}
+			else
+			{
+				Result = MZ_BMPE_BMPE280_SetSpiState(DevicePtr, SpiState);
+			}
+
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to set SPI state for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t SpiState)
+{
+	//Variable for config register value
+	uint8_t ConfigRegVal = 0;
+
+	//Get config register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for SPI state
+		ConfigRegVal &= 0xFE;
+
+		//Setting mode bits in register value
+		ConfigRegVal |= SpiState;
+
+		//Writing value to control register
+		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
 		{
 			return BMPE_WRITE_REGISTER_ERROR;
 		}

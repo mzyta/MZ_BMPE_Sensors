@@ -87,7 +87,8 @@ typedef enum{
 	BMPE_WRONG_DEVICE_TYPE = 8,
 	BMPE_READ_REGISTER_ERROR = 9,
 	BMPE_WRITE_REGISTER_ERROR = 10,
-	BMPE_I2C_READ_REGISTER_ERROR = 11
+	BMPE_I2C_READ_REGISTER_ERROR = 11,
+	BMPE_SPI_STATE_ERROR = 12
 } MZ_BMPE_Errors_t;
 
 
@@ -108,14 +109,16 @@ MZ_BMPE_Errors_t MZ_BMPE_SPI_Registration(MZ_BMPE_Device_t *DevicePtr, SPI_Handl
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*---------------------------------------------------Setters functions--------------------------------------------------------------*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Pressure oversampling setter function for BMP180, BMP280, BME280
+//Pressure oversampling setter function for BMP180, BMP280, BME280 (for values check module datasheet)
 MZ_BMPE_Errors_t MZ_BMPE_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
-//Temperature oversampling setter function for BMP180, BMP280, BME280
+//Temperature oversampling setter function for BMP180, BMP280, BME280 (for values check module datasheet)
 MZ_BMPE_Errors_t MZ_BMPE_SetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
-//Mode setter function for BMP280, BME280
+//Mode setter function for BMP280, BME280 (for values check module datasheet)
 MZ_BMPE_Errors_t MZ_BMPE_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode);
-//Humadity oversampling setter function for BME280
+//Humadity oversampling setter function for BME280 (for values check module datasheet)
 MZ_BMPE_Errors_t MZ_BMPE_SetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
+//SPI communication protocol setter function for BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_SetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t SpiState);
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
