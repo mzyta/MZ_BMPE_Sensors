@@ -28,6 +28,9 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetTemperatureOversampling(MZ_BMPE_Devic
 //Device mode functions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode);
 
+//Humidity oversampling functions
+static MZ_BMPE_Errors_t MZ_BMPE_BME280_SetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*-----------------------------------------------------Functions-------------------------------------------------------------------*/
@@ -274,7 +277,7 @@ MZ_BMPE_Errors_t MZ_BMPE_SetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr,
 		}
 		else
 		{
-			//Checking device type and use the appropriate function
+			//Checking device type and use set temperature oversampling function for correct device
 			if(DevicePtr->DeviceType == BMP180)
 			{
 				Result = BMPE_WRONG_DEVICE_TYPE;
@@ -339,7 +342,7 @@ MZ_BMPE_Errors_t MZ_BMPE_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode)
 	}
 	else
 	{
-		//Checking oversampling value
+		//Checking device type and use set mode functions for correct device
 		if(DevicePtr->DeviceType == BMP180)
 		{
 			return BMPE_WRONG_DEVICE_TYPE;
@@ -379,6 +382,71 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetMode(MZ_BMPE_Device_t *DevicePtr, uin
 
 		//Writing value to control register
 		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+		{
+			return BMPE_WRITE_REGISTER_ERROR;
+		}
+
+		else
+		{
+			return BMPE_OK;
+		}
+	}
+
+}
+
+//Function to set humadity oversmpling for devices
+MZ_BMPE_Errors_t MZ_BMPE_SetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking device type and use set humidity oversampling functions for correct device
+		if(DevicePtr->DeviceType != BME280)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+			Result = MZ_BMPE_BME280_SetHumidityOversampling(DevicePtr, Oversampling);
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to set humadity oversmpling for BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BME280_SetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling)
+{
+	//Variable for control humidity register value
+	uint8_t CtrlHumRegVal = 0;
+
+	//Get control register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CTRL_HUM, &CtrlHumRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for humidity oversampling
+		CtrlHumRegVal &= 0xF8;
+
+		//Setting mode bits in register value
+		CtrlHumRegVal |= Oversampling;
+
+		//Writing value to control humidity register
+		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_CTRL_HUM, &CtrlHumRegVal) != BMPE_OK)
 		{
 			return BMPE_WRITE_REGISTER_ERROR;
 		}
