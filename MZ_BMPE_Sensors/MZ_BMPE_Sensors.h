@@ -120,8 +120,10 @@ MZ_BMPE_Errors_t MZ_BMPE_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode);
 MZ_BMPE_Errors_t MZ_BMPE_SetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
 //SPI communication protocol setter function for BMP280, BME280 (for values check module datasheet)
 MZ_BMPE_Errors_t MZ_BMPE_SetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t SpiState);
-//Filter coefficient function for BMP280, BME280
+//Filter coefficient setter function for BMP280, BME280 (for values check module datasheet)
 MZ_BMPE_Errors_t MZ_BMPE_SetFilterCoefficient(MZ_BMPE_Device_t *DevicePtr, uint8_t FilterCoefficient);
+//Standby time setter function for BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_SetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t StandbyTime);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*---------------------------------------------------Getters functions--------------------------------------------------------------*/

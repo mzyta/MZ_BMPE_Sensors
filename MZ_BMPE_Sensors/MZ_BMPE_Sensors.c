@@ -37,6 +37,9 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetSpiState(MZ_BMPE_Device_t *DevicePtr,
 //Filter coefficient functions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetFilterCoefficient(MZ_BMPE_Device_t *DevicePtr, uint8_t FilterCoefficient);
 
+//Standby time functions
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t StandbyTime);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*-----------------------------------------------------Functions-------------------------------------------------------------------*/
@@ -598,7 +601,82 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetFilterCoefficient(MZ_BMPE_Device_t *D
 		ConfigRegVal &= 0xE3;
 
 		//Setting filter coefficient bits in register value
-		ConfigRegVal |= FilterCoefficient;
+		ConfigRegVal |= (FilterCoefficient<<2);
+
+		//Writing value to control register
+		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
+		{
+			return BMPE_WRITE_REGISTER_ERROR;
+		}
+
+		else
+		{
+			return BMPE_OK;
+		}
+	}
+
+}
+
+
+//Function to set standby time for devices
+MZ_BMPE_Errors_t MZ_BMPE_SetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t StandbyTime)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking device type and use set standby time functions for correct device
+		if(DevicePtr->DeviceType == BMP180)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+			//Checking SPI state value and use set standby time function for correct value
+			if(StandbyTime > 7)
+			{
+				return BMPE_FILTER_COEFFICIENT_ERROR;
+			}
+			else
+			{
+				Result = MZ_BMPE_BMPE280_SetStanbyTime(DevicePtr, StandbyTime);
+			}
+
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to set standby time for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t StandbyTime)
+{
+	//Variable for config register value
+	uint8_t ConfigRegVal = 0;
+
+	//Get config register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for standby time
+		ConfigRegVal &= 0x1F;
+
+		//Setting standby time bits in register value
+		ConfigRegVal |= (StandbyTime<<5);
 
 		//Writing value to control register
 		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
