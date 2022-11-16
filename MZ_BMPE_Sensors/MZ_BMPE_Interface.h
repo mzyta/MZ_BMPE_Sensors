@@ -10,8 +10,10 @@
 
 #include "MZ_BMPE_Sensors.h"
 
-
+//Header of register reading function
 MZ_BMPE_Errors_t MZ_BMPE_ReadRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Register, uint8_t *RegisterValue);
+
+//Header of register writing function
 MZ_BMPE_Errors_t MZ_BMPE_WriteRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Register, uint8_t *RegisterValue);
 
 #endif /* MZ_BMPE_INTERFACE_H_ */

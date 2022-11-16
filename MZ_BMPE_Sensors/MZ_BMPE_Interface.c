@@ -17,9 +17,11 @@
 #include "MZ_BMPE_spi.h"
 #endif
 
+//Register reading function for all communication protocol
 MZ_BMPE_Errors_t MZ_BMPE_ReadRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Register, uint8_t *RegisterValue)
 {
 	#ifdef MZ_BMPE_HAL_I2C
+	//Check device communication protocol and use reading function for it
 	if(DevicePtr->CommunicationProtocol == I2C)
 	{
 		return MZ_BMPE_I2C_ReadRegister(DevicePtr->i2cHandle,DevicePtr->DeviceAddress, Register, RegisterValue);
@@ -27,6 +29,7 @@ MZ_BMPE_Errors_t MZ_BMPE_ReadRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Regis
 	#endif
 
 	#ifdef MZ_BMPE_HAL_SPI
+	//Check device communication protocol and use reading function for it
 	if(DevicePtr->CommunicationProtocol == SPI)
 	{
 		return MZ_BMPE_SPI_ReadRegister(DevicePtr, Register, RegisterValue);
@@ -36,9 +39,11 @@ MZ_BMPE_Errors_t MZ_BMPE_ReadRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Regis
 	return BMPE_READ_REGISTER_ERROR;
 }
 
+//Register writing function for all communication protocol
 MZ_BMPE_Errors_t MZ_BMPE_WriteRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Register, uint8_t *RegisterValue)
 {
 	#ifdef MZ_BMPE_HAL_I2C
+	//Check device communication protocol and use reading function for it
 	if(DevicePtr->CommunicationProtocol == I2C)
 	{
 		return MZ_BMPE_I2C_WriteRegister(DevicePtr->i2cHandle,DevicePtr->DeviceAddress, Register, RegisterValue);
@@ -46,6 +51,7 @@ MZ_BMPE_Errors_t MZ_BMPE_WriteRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Regi
 	#endif
 
 	#ifdef MZ_BMPE_HAL_SPI
+	//Check device communication protocol and use reading function for it
 	if(DevicePtr->CommunicationProtocol == SPI)
 	{
 		return MZ_BMPE_SPI_WriteRegister(DevicePtr, Register, RegisterValue);
