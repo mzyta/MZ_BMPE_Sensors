@@ -25,6 +25,7 @@
 
 //#include "main.h"
 
+//Device types enum
 typedef enum {
 	BMP180 = 1,
 	BMP280 = 2,
@@ -32,11 +33,14 @@ typedef enum {
 } MZ_BMPE_DeviceType_t;
 
 
+//Devices communication protocol enum
 typedef enum {
 	I2C = 1,
 	SPI = 2
 } MZ_BMPE_CommunicationProtocol_t;
 
+
+//Device structure
 typedef struct{
 	//Variable for future solutions
 	uint8_t DeviceId;
@@ -57,7 +61,7 @@ typedef struct{
 	 */
 	MZ_BMPE_CommunicationProtocol_t CommunicationProtocol;
 
-	//Communication handlers
+	//Communication handlers for HAL communication
 	#ifdef MZ_BMPE_HAL_I2C
 	I2C_HandleTypeDef *i2cHandle;
 	#endif
@@ -69,6 +73,8 @@ typedef struct{
 
 } MZ_BMPE_Device_t;
 
+
+//Errors enum
 typedef enum{
 	BMPE_OK = 0,
 	BMPE_INIT_ERROR = 1,
@@ -85,8 +91,11 @@ typedef enum{
 } MZ_BMPE_Errors_t;
 
 
+//Device initialization function
 MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceAddress, uint8_t DeviceType, uint8_t CommunicationProtocol);
 
+
+//Registration of communication handlers for HAL
 #ifdef MZ_BMPE_HAL_I2C
 MZ_BMPE_Errors_t MZ_BMPE_I2C_Registration(MZ_BMPE_Device_t *DevicePtr, I2C_HandleTypeDef *i2cHandle);
 #endif
@@ -95,7 +104,20 @@ MZ_BMPE_Errors_t MZ_BMPE_I2C_Registration(MZ_BMPE_Device_t *DevicePtr, I2C_Handl
 MZ_BMPE_Errors_t MZ_BMPE_SPI_Registration(MZ_BMPE_Device_t *DevicePtr, SPI_HandleTypeDef *spiHandle);
 #endif
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*---------------------------------------------------Setters functions--------------------------------------------------------------*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Pressure oversampling setter function for BMP180, BMP280, BME280
 MZ_BMPE_Errors_t MZ_BMPE_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
+//Temperature oversampling setter function for BMP180, BMP280, BME280
 MZ_BMPE_Errors_t MZ_BMPE_SetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
+//Mode setter function for BMP280, BME280
+MZ_BMPE_Errors_t MZ_BMPE_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode);
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*---------------------------------------------------Getters functions--------------------------------------------------------------*/
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif /* MZ_BMPE_SENSORS_H_ */

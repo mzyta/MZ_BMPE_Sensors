@@ -11,6 +11,7 @@
 #include "MZ_BMPE_Sensors.h"
 
 #ifdef MZ_BMPE_HAL_I2C
+//Headers for HAL I2C protocol
 MZ_BMPE_Errors_t MZ_BMPE_I2C_ReadRegister(I2C_HandleTypeDef *i2cHandle, uint8_t DeviceAddress, uint8_t Register, uint8_t *RegisterValue);
 MZ_BMPE_Errors_t MZ_BMPE_I2C_WriteRegister(I2C_HandleTypeDef *i2cHandle, uint8_t DeviceAddress, uint8_t Register, uint8_t *RegisterValue);
 #else

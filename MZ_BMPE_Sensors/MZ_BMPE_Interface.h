@@ -10,6 +10,7 @@
 
 #include "MZ_BMPE_Sensors.h"
 
+
 MZ_BMPE_Errors_t MZ_BMPE_ReadRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Register, uint8_t *RegisterValue);
 MZ_BMPE_Errors_t MZ_BMPE_WriteRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Register, uint8_t *RegisterValue);
 
