@@ -6,3 +6,11 @@
  */
 
 
+
+#include "MZ_BMPE_spi.h"
+
+#ifdef MZ_BMPE_HAL_SPI
+
+#else
+
+#endif

@@ -22,7 +22,7 @@ MZ_BMPE_Errors_t MZ_BMPE_ReadRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Regis
 	#ifdef MZ_BMPE_HAL_I2C
 	if(DevicePtr->CommunicationProtocol == I2C)
 	{
-		return MZ_BMPE_I2C_ReadRegister(DevicePtr, Register, RegisterValue);
+		return MZ_BMPE_I2C_ReadRegister(DevicePtr->i2cHandle,DevicePtr->DeviceAddress, Register, RegisterValue);
 	}
 	#endif
 
@@ -41,7 +41,7 @@ MZ_BMPE_Errors_t MZ_BMPE_WriteRegister(MZ_BMPE_Device_t *DevicePtr, uint8_t Regi
 	#ifdef MZ_BMPE_HAL_I2C
 	if(DevicePtr->CommunicationProtocol == I2C)
 	{
-		return MZ_BMPE_I2C_WriteRegister(DevicePtr, Register, RegisterValue);
+		return MZ_BMPE_I2C_WriteRegister(DevicePtr->i2cHandle,DevicePtr->DeviceAddress, Register, RegisterValue);
 	}
 	#endif
 
