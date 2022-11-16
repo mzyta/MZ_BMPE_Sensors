@@ -25,6 +25,9 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetPressureOversampling(MZ_BMPE_Device_t
 //Temperature oversampling sunctions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t OversamplingValue);
 
+//Device mode functions
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*-----------------------------------------------------Functions-------------------------------------------------------------------*/
@@ -321,5 +324,69 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetTemperatureOversampling(MZ_BMPE_Devic
 		}
 	}
 
+}
+
+//Function to set mode for devices
+MZ_BMPE_Errors_t MZ_BMPE_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking oversampling value
+		if(DevicePtr->DeviceType == BMP180)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+			Result = MZ_BMPE_BMPE280_SetMode(DevicePtr, Mode);
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to set temperature oversampling for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode)
+{
+	//Variable for control register value
+	uint8_t CtrlMeasRegVal = 0;
+
+	//Get control register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for mode
+		CtrlMeasRegVal &= 0xFC;
+
+		//Setting mode bits in register value
+		CtrlMeasRegVal |= Mode;
+
+		//Writing value to control register
+		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+		{
+			return BMPE_WRITE_REGISTER_ERROR;
+		}
+
+		else
+		{
+			return BMPE_OK;
+		}
+	}
 
 }
