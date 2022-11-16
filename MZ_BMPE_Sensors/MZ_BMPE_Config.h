@@ -15,14 +15,17 @@
 
 //Communication protocols definitions
 
-//Uncomment this definition if you want use SPI
-//#define MZ_BMPE_SPI
+/*Uncomment this definition if you want use HAL SPI. If this definition is commented, you must write your own communication functions.
+ * In MZ_BMPE_spi.h and MZ_BMPE_spi.c you find __weak functions for callbacks.
+ */
+//#define MZ_BMPE_HAL_SPI
 
-//Uncomment this definition if you want use I2C
-#define MZ_BMPE_I2C
+/*Uncomment this definition if you want use HAL I2C. If this definition is commented, you must write your own communication functions.
+ * In MZ_BMPE_spi.h and MZ_BMPE_spi.c you find __weak functions for callbacks.
+ */
+#define MZ_BMPE_HAL_I2C
 
-//Uncomment this definition if you want use low leyer communication functions (you find callback definitions in MZ_BMPE_spi.h and MZ_BMPE_i2c.h
-//#define MZ_BMPE_LL_COMMUNICATION
+
 
 
 

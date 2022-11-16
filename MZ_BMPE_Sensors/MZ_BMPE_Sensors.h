@@ -13,11 +13,11 @@
 #include "MZ_BMPE_Config.h"
 
 
-#ifdef MZ_BMPE_I2C
+#ifdef MZ_BMPE_HAL_I2C
 #include "i2c.h"  //Path to I2C library
 #endif
 
-#ifdef MZ_BMPE_SPI
+#ifdef MZ_BMPE_HAL_SPI
 #include "spi.h" //Path to SPI library
 #endif
 
@@ -58,11 +58,11 @@ typedef struct{
 	MZ_BMPE_CommunicationProtocol_t CommunicationProtocol;
 
 	//Communication handlers
-	#ifdef MZ_BMPE_I2C
+	#ifdef MZ_BMPE_HAL_I2C
 	I2C_HandleTypeDef *i2cHandle;
 	#endif
 
-	#ifdef MZ_BMPE_SPI
+	#ifdef MZ_BMPE_HAL_SPI
 	SPI_HandleTypeDef *spiHandle;
 	#endif
 
@@ -77,20 +77,24 @@ typedef enum{
 	BMPE_COMMUNICATION_PROBLEM = 4,
 	BMPE_I2C_HANDLE_ERROR = 5,
 	BMPE_SPI_HANDLE_ERROR = 6,
-	BMPE_OVERSAMPLING_ERROR = 7
+	BMPE_OVERSAMPLING_ERROR = 7,
+	BMPE_WRONG_DEVICE_TYPE = 8,
+	BMPE_READ_REGISTER_ERROR = 9,
+	BMPE_WRITE_REGISTER_ERROR = 10
 } MZ_BMPE_Errors_t;
 
 
 MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceAddress, uint8_t DeviceType, uint8_t CommunicationProtocol);
 
-#ifdef MZ_BMPE_I2C
+#ifdef MZ_BMPE_HAL_I2C
 MZ_BMPE_Errors_t MZ_BMPE_I2C_Registration(MZ_BMPE_Device_t *DevicePtr, I2C_HandleTypeDef *i2cHandle);
 #endif
 
-#ifdef MZ_BMPE_SPI
+#ifdef MZ_BMPE_HAL_SPI
 MZ_BMPE_Errors_t MZ_BMPE_SPI_Registration(MZ_BMPE_Device_t *DevicePtr, SPI_HandleTypeDef *spiHandle);
 #endif
 
 MZ_BMPE_Errors_t MZ_BMPE_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
+MZ_BMPE_Errors_t MZ_BMPE_SetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
 
 #endif /* MZ_BMPE_SENSORS_H_ */
