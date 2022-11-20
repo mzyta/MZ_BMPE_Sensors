@@ -691,3 +691,36 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetStanbyTime(MZ_BMPE_Device_t *DevicePt
 	}
 
 }
+
+//Function to set reset register for BMP180, BMP280, BME280
+MZ_BMPE_Errors_t MZ_BMPE_SetReset(MZ_BMPE_Device_t *DevicePtr)
+{
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Need variable for pointer to write register function
+		uint8_t ResetRegisterValue = 0xB6;
+
+		//Set reset register for all devices
+		if(MZ_BMPE_WriteRegister(DevicePtr, MZ_BMPE280_SOFTRESET, &ResetRegisterValue) != BMPE_OK)
+		{
+			return BMPE_WRITE_REGISTER_ERROR;
+		}
+
+		else
+		{
+			return BMPE_OK;
+		}
+
+	}
+}
+
+
+
+
+
+
