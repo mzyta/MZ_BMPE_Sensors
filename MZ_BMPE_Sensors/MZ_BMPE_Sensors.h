@@ -70,6 +70,48 @@ typedef struct{
 	SPI_HandleTypeDef *spiHandle;
 	#endif
 
+	#if defined(MZ_BMPE_BMP280) || defined(MZ_BMPE_BME280)
+	//Calibration variables for temperature BMP280, BME280
+	uint16_t dig_T1;
+	int16_t dig_T2;
+	int16_t dig_T3;
+
+	//Calibration variables for pressure BMP280, BME280
+	uint16_t dig_P1;
+	int16_t dig_P2;
+	int16_t dig_P3;
+	int16_t dig_P4;
+	int16_t dig_P5;
+	int16_t dig_P6;
+	int16_t dig_P7;
+	int16_t dig_P8;
+	int16_t dig_P9;
+	#endif
+
+	#ifdef MZ_BMPE_BME280
+	//Calibration variables for humidity BME280
+	uint8_t dig_H1;
+	int16_t dig_H2;
+	uint8_t dig_H3;
+	int16_t dig_H4;
+	int16_t dig_H5;
+	int8_t dig_H6;
+	#endif
+
+	#ifdef MZ_BMPE_BMP180
+	//Calibration variables for BMP180
+	int16_t AC1;
+	int16_t AC2;
+	int16_t AC3;
+	uint16_t AC4;
+	uint16_t AC5;
+	uint16_t AC6;
+	int16_t B1;
+	int16_t B2;
+	int16_t MB;
+	int16_t MC;
+	int16_t MD;
+	#endif
 
 } MZ_BMPE_Device_t;
 
@@ -90,7 +132,8 @@ typedef enum{
 	BMPE_I2C_READ_REGISTER_ERROR = 11,
 	BMPE_SPI_STATE_ERROR = 12,
 	BMPE_FILTER_COEFFICIENT_ERROR = 13,
-	BMPE_DATA_POINTER_ERROR = 14
+	BMPE_DATA_POINTER_ERROR = 14,
+	BMPE_CALIBRATION_DATA_ERROR = 15
 } MZ_BMPE_Errors_t;
 
 

@@ -18,6 +18,21 @@ static uint8_t DeviceCount = 0;
 /*----------------------------------------------Static functions headers------------------------------------------------------------*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Calibration values functions
+static MZ_BMPE_Errors_t MZ_BMPE_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr);
+
+#ifdef MZ_BMPE_BMP180
+static MZ_BMPE_Errors_t MZ_BMPE_BMP180_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr);
+#endif
+
+#ifdef MZ_BMPE_BMP280
+static MZ_BMPE_Errors_t MZ_BMPE_BMP280_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr);
+#endif
+
+#ifdef MZ_BMPE_BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BME280_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr);
+#endif
+
 //Pressure oversaampling functions
 static MZ_BMPE_Errors_t MZ_BMPE_BMP180_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t OversamplingValue);
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t OversamplingValue);
@@ -102,6 +117,11 @@ MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceA
 			DevicePtr->CommunicationProtocol = CommunicationProtocol;
 		}
 
+		if(MZ_BMPE_GetCalibrationValues(DevicePtr) != BMPE_OK)
+		{
+			return BMPE_CALIBRATION_DATA_ERROR;
+		}
+
 		//Creating device Id
 		DeviceCount += 1;
 		DevicePtr->DeviceId = DeviceCount;
@@ -111,6 +131,62 @@ MZ_BMPE_Errors_t MZ_BMPE_DeviceInit(MZ_BMPE_Device_t *DevicePtr, uint8_t DeviceA
 	return BMPE_OK;
 
 }
+
+//Function to get calibration values for devices
+static MZ_BMPE_Errors_t MZ_BMPE_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr)
+{
+	#ifdef MZ_BMPE_BMP180
+	if(DevicePtr->DeviceType == BMP180)
+	{
+		return MZ_BMPE_BMP180_GetCalibrationValues(DevicePtr);
+	}
+	#endif
+
+	#ifdef MZ_BMPE_BMP280
+	if(DevicePtr->DeviceType == BMP180)
+	{
+		return MZ_BMPE_BMP280_GetCalibrationValues(DevicePtr);
+	}
+	#endif
+
+	#ifdef MZ_BMPE_BME280
+	if(DevicePtr->DeviceType == BME280)
+	{
+		return MZ_BMPE_BME280_GetCalibrationValues(DevicePtr);
+	}
+	#endif
+
+	return BMPE_OK;
+}
+
+
+//Function to get calibration values for BMP180
+#ifdef MZ_BMPE_BMP180
+static MZ_BMPE_Errors_t MZ_BMPE_BMP180_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr)
+{
+	return BMPE_OK;
+}
+#endif
+
+
+//Function to get calibration values for BMP280
+#ifdef MZ_BMPE_BMP280
+static MZ_BMPE_Errors_t MZ_BMPE_BMP280_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr)
+{
+	return BMPE_OK;
+}
+#endif
+
+
+
+//Function to get calibration values for BME280
+#ifdef MZ_BMPE_BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BME280_GetCalibrationValues(MZ_BMPE_Device_t *DevicePtr)
+{
+	return BMPE_OK;
+}
+#endif
+
 
 //Function binding I2C handle with device. If you comment I2C definition in MZ_BMPE_Config.h this function will be not compiled
 #ifdef MZ_BMPE_HAL_I2C

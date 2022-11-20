@@ -26,8 +26,14 @@
 #define MZ_BMPE_HAL_I2C
 
 
+//Uncomment this definition if you want use BMP180
+#define MZ_BMPE_BMP180
 
+//Uncomment this definition if you want use BMP280
+#define MZ_BMPE_BMP280
 
+//Uncomment this definition if you want use BME280
+#define MZ_BMPE_BME280
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
