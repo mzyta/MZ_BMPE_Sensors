@@ -89,7 +89,8 @@ typedef enum{
 	BMPE_WRITE_REGISTER_ERROR = 10,
 	BMPE_I2C_READ_REGISTER_ERROR = 11,
 	BMPE_SPI_STATE_ERROR = 12,
-	BMPE_FILTER_COEFFICIENT_ERROR = 13
+	BMPE_FILTER_COEFFICIENT_ERROR = 13,
+	BMPE_DATA_POINTER_ERROR = 14
 } MZ_BMPE_Errors_t;
 
 
@@ -130,5 +131,8 @@ MZ_BMPE_Errors_t MZ_BMPE_SetReset(MZ_BMPE_Device_t *DevicePtr);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*---------------------------------------------------Getters functions--------------------------------------------------------------*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Pressure oversampling getter function for BMP180, BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
+
 
 #endif /* MZ_BMPE_SENSORS_H_ */

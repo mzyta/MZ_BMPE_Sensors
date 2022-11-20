@@ -22,6 +22,9 @@ static uint8_t DeviceCount = 0;
 static MZ_BMPE_Errors_t MZ_BMPE_BMP180_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t OversamplingValue);
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t OversamplingValue);
 
+static MZ_BMPE_Errors_t MZ_BMPE_BMP180_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
+
 //Temperature oversampling sunctions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t OversamplingValue);
 
@@ -721,6 +724,93 @@ MZ_BMPE_Errors_t MZ_BMPE_SetReset(MZ_BMPE_Device_t *DevicePtr)
 
 
 
+MZ_BMPE_Errors_t MZ_BMPE_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
 
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Validation device type to variable of oversampling
+		if(Oversampling == NULL)
+		{
+			return BMPE_DATA_POINTER_ERROR;
+		}
+		else
+		{
+			//Check the device type and use the appropriate function
+			if(DevicePtr->DeviceType == BMP180)
+			{
+				Result = MZ_BMPE_BMP180_GetPressureOversampling(DevicePtr, Oversampling);
+			}
+			else
+			{
+				Result = MZ_BMPE_BMPE280_GetPressureOversampling(DevicePtr, Oversampling);
+			}
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to set pressure oversampling for BMP180
+static MZ_BMPE_Errors_t MZ_BMPE_BMP180_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
+{
+	//Variable for control register value
+	uint8_t CtrlMeasRegVal = 0;
+
+	//Get control register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMP180_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+	else
+	{
+		//Bit mask for pressure oversampling
+		CtrlMeasRegVal &= 0xC0;
+
+		//Set pressure oversampling value to oversampling pointer
+		*Oversampling = (CtrlMeasRegVal>>6);
+
+		return BMPE_OK;
+
+	}
+
+
+}
+
+
+//Function to set pressure oversampling for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
+{
+	//Variable for control register value
+	uint8_t CtrlMeasRegVal = 0;
+
+	//Get control register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMP180_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+	else
+	{
+		//Bit mask for pressure oversampling
+		CtrlMeasRegVal &= 0x1C;
+
+		//Set pressure oversampling value to oversampling pointer
+		*Oversampling = (CtrlMeasRegVal>>2);
+
+		return BMPE_OK;
+
+	}
+
+}
 
 
