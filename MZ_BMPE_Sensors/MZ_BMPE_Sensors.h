@@ -133,6 +133,18 @@ MZ_BMPE_Errors_t MZ_BMPE_SetReset(MZ_BMPE_Device_t *DevicePtr);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Pressure oversampling getter function for BMP180, BMP280, BME280 (for values check module datasheet)
 MZ_BMPE_Errors_t MZ_BMPE_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
+//Temperrature oversampling getter function for BMP180, BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_GetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
+//Mode getter function for BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_GetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t *Mode);
+//Humadity oversampling getter function for BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_GetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
+//SPI communication protocol getter function for BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_GetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t *SpiState);
+//Filter coefficient getter function for BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_GetFilterCoefficient(MZ_BMPE_Device_t *DevicePtr, uint8_t *FilterCoefficient);
+//Standby time getter function for BMP280, BME280 (for values check module datasheet)
+MZ_BMPE_Errors_t MZ_BMPE_GetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t *StandbyTime);
 
 
 #endif /* MZ_BMPE_SENSORS_H_ */

@@ -27,21 +27,27 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetPressureOversampling(MZ_BMPE_Device_t
 
 //Temperature oversampling sunctions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t OversamplingValue);
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
 
 //Device mode functions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t Mode);
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t *Mode);
 
 //Humidity oversampling functions
 static MZ_BMPE_Errors_t MZ_BMPE_BME280_SetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t Oversampling);
+static MZ_BMPE_Errors_t MZ_BMPE_BME280_GetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling);
 
 //SPI state functions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t SpiState);
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t *SpiState);
 
 //Filter coefficient functions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetFilterCoefficient(MZ_BMPE_Device_t *DevicePtr, uint8_t FilterCoefficient);
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetFilterCoefficient(MZ_BMPE_Device_t *DevicePtr, uint8_t *FilterCoefficient);
 
 //Standby time functions
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_SetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t StandbyTime);
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t *StandbyTime);
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -723,7 +729,7 @@ MZ_BMPE_Errors_t MZ_BMPE_SetReset(MZ_BMPE_Device_t *DevicePtr)
 }
 
 
-
+//Get pressure oversampling value for devices
 MZ_BMPE_Errors_t MZ_BMPE_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
 {
 	//Variable for functions result
@@ -761,7 +767,7 @@ MZ_BMPE_Errors_t MZ_BMPE_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, ui
 }
 
 
-//Function to set pressure oversampling for BMP180
+//Function to get pressure oversampling for BMP180
 static MZ_BMPE_Errors_t MZ_BMPE_BMP180_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
 {
 	//Variable for control register value
@@ -788,14 +794,14 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMP180_GetPressureOversampling(MZ_BMPE_Device_t 
 }
 
 
-//Function to set pressure oversampling for BMP280 and BME280
+//Function to get pressure oversampling for BMP280 and BME280
 static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetPressureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
 {
 	//Variable for control register value
 	uint8_t CtrlMeasRegVal = 0;
 
 	//Get control register value
-	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMP180_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
 	{
 		return BMPE_READ_REGISTER_ERROR;
 	}
@@ -814,3 +820,363 @@ static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetPressureOversampling(MZ_BMPE_Device_t
 }
 
 
+//Function to get temperature oversampling value for devices
+MZ_BMPE_Errors_t MZ_BMPE_GetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Validation device type to variable of oversampling
+		if(Oversampling == NULL)
+		{
+			return BMPE_DATA_POINTER_ERROR;
+		}
+		else
+		{
+			//Check the device type and use the appropriate function
+			if(DevicePtr->DeviceType == BMP180)
+			{
+				Result = BMPE_WRONG_DEVICE_TYPE;
+			}
+			else
+			{
+				Result = MZ_BMPE_BMPE280_GetTemperatureOversampling(DevicePtr, Oversampling);
+			}
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to get temperature oversampling for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetTemperatureOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
+{
+	//Variable for control register value
+	uint8_t CtrlMeasRegVal = 0;
+
+	//Get control register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+	else
+	{
+		//Bit mask for temperature oversampling
+		CtrlMeasRegVal &= 0xE0;
+
+		//Set pressure oversampling value to oversampling pointer
+		*Oversampling = (CtrlMeasRegVal>>5);
+
+		return BMPE_OK;
+
+	}
+
+}
+
+//Function to get mode value for devices
+MZ_BMPE_Errors_t MZ_BMPE_GetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t *Mode)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Validation device type to variable of mode
+		if(Mode == NULL)
+		{
+			return BMPE_DATA_POINTER_ERROR;
+		}
+		else
+		{
+			//Check the device type and use the appropriate function
+			if(DevicePtr->DeviceType == BMP180)
+			{
+				Result = BMPE_WRONG_DEVICE_TYPE;
+			}
+			else
+			{
+				Result = MZ_BMPE_BMPE280_GetMode(DevicePtr, Mode);
+			}
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to get mode for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetMode(MZ_BMPE_Device_t *DevicePtr, uint8_t *Mode)
+{
+	//Variable for control register value
+	uint8_t CtrlMeasRegVal = 0;
+
+	//Get control register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CTRL_MEAS, &CtrlMeasRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+	else
+	{
+		//Bit mask for mode
+		CtrlMeasRegVal &= 0x03;
+
+		//Set mode value to mode pointer
+		*Mode = (CtrlMeasRegVal>>0);
+
+		return BMPE_OK;
+
+	}
+
+}
+
+
+
+//Function to get humadity oversmpling for devices
+MZ_BMPE_Errors_t MZ_BMPE_GetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking device type and use set humidity oversampling functions for correct device
+		if(DevicePtr->DeviceType != BME280)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+			Result = MZ_BMPE_BME280_GetHumidityOversampling(DevicePtr, Oversampling);
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to get humadity oversmpling for BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BME280_GetHumidityOversampling(MZ_BMPE_Device_t *DevicePtr, uint8_t *Oversampling)
+{
+	//Variable for control humidity register value
+	uint8_t CtrlHumRegVal = 0;
+
+	//Get control register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CTRL_HUM, &CtrlHumRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for humidity oversampling
+		CtrlHumRegVal &= 0x03;
+
+		//Setting mode bits in register value
+		*Oversampling = (CtrlHumRegVal>>0);
+
+
+		return BMPE_OK;
+	}
+
+}
+
+
+//Function to get SPI state for devices
+MZ_BMPE_Errors_t MZ_BMPE_GetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t *SpiState)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking device type and use set SPI state functions for correct device
+		if(DevicePtr->DeviceType == BMP180)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+
+			Result = MZ_BMPE_BMPE280_GetSpiState(DevicePtr, SpiState);
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to get SPI state for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetSpiState(MZ_BMPE_Device_t *DevicePtr, uint8_t *SpiState)
+{
+	//Variable for config register value
+	uint8_t ConfigRegVal = 0;
+
+	//Get config register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for SPI state
+		ConfigRegVal &= 0x01;
+
+		//Setting SPI state bits in variable
+		*SpiState = (ConfigRegVal>>0);
+
+		return BMPE_OK;
+
+	}
+
+}
+
+//Function to set filter coefficient for devices
+MZ_BMPE_Errors_t MZ_BMPE_GetFilterCoefficient(MZ_BMPE_Device_t *DevicePtr, uint8_t *FilterCoefficient)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking device type and use get filter coefficient functions for correct device
+		if(DevicePtr->DeviceType == BMP180)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+
+			Result = MZ_BMPE_BMPE280_GetFilterCoefficient(DevicePtr, FilterCoefficient);
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to set filter coefficient for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetFilterCoefficient(MZ_BMPE_Device_t *DevicePtr, uint8_t *FilterCoefficient)
+{
+	//Variable for config register value
+	uint8_t ConfigRegVal = 0;
+
+	//Get config register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for filter coefficient
+		ConfigRegVal &= 0x1C;
+
+		//Setting filter coefficient bits in variable pointer
+		*FilterCoefficient = (ConfigRegVal>>2);
+
+		return BMPE_OK;
+
+	}
+
+}
+
+
+//Function to set standby time for devices
+MZ_BMPE_Errors_t MZ_BMPE_GetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t *StandbyTime)
+{
+	//Variable for functions result
+	MZ_BMPE_Errors_t Result;
+
+	//Checking device pointer
+	if(DevicePtr == NULL)
+	{
+		return BMPE_DEVICE_POINTER_ERROR;
+	}
+	else
+	{
+		//Checking device type and use get standby time functions for correct device
+		if(DevicePtr->DeviceType == BMP180)
+		{
+			return BMPE_WRONG_DEVICE_TYPE;
+		}
+		else
+		{
+
+			Result = MZ_BMPE_BMPE280_GetStanbyTime(DevicePtr, StandbyTime);
+
+		}
+
+	}
+
+
+	return Result;
+}
+
+
+//Function to set standby time for BMP280 and BME280
+static MZ_BMPE_Errors_t MZ_BMPE_BMPE280_GetStanbyTime(MZ_BMPE_Device_t *DevicePtr, uint8_t *StandbyTime)
+{
+	//Variable for config register value
+	uint8_t ConfigRegVal = 0;
+
+	//Get config register value
+	if(MZ_BMPE_ReadRegister(DevicePtr, MZ_BMPE280_CONFIG, &ConfigRegVal) != BMPE_OK)
+	{
+		return BMPE_READ_REGISTER_ERROR;
+	}
+
+	else
+	{
+		//Bit mask for standby time
+		ConfigRegVal &= 0xE0;
+
+		//Setting standby time bits in variable pointer
+		*StandbyTime = (ConfigRegVal>>5);
+
+		return BMPE_OK;
+
+	}
+
+}
